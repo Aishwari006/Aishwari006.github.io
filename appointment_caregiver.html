@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eldora - Appointment Reminder</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom card hover effect for extra smooth transition */
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-300 to-blue-900 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white shadow-xl p-6 m-6 w-11/12 max-w-4xl mx-auto flex items-center justify-center rounded-2xl">
+    <h1 class="text-4xl font-extrabold text-indigo-600 flex items-center">
+      <span class="mr-3">📅</span> Eldora Appointment Reminder
+    </h1>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6 flex-grow">
+    <!-- Form Section -->
+    <section class="bg-white shadow-2xl rounded-2xl p-8 m-6 max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Add Appointment</h2>
+      <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex flex-col">
+          <label class="text-gray-700 mb-2" for="title">Appointment Title</label>
+          <input type="text" id="title" name="title" placeholder="Enter title" required class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200">
+        </div>
+        <div class="flex flex-col">
+          <label class="text-gray-700 mb-2" for="hospital">Hospital Name</label>
+          <input type="text" id="hospital" name="hospital" placeholder="Enter hospital" required class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200">
+        </div>
+        <div class="flex flex-col">
+          <label class="text-gray-700 mb-2" for="location">Location</label>
+          <input type="text" id="location" name="location" placeholder="Enter location" required class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200">
+        </div>
+        <div class="flex flex-col">
+          <label class="text-gray-700 mb-2" for="date">Date</label>
+          <input type="date" id="date" name="date" required class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200">
+        </div>
+        <div class="flex flex-col">
+          <label class="text-gray-700 mb-2" for="time">Time</label>
+          <input type="time" id="time" name="time" required class="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 transition duration-200">
+        </div>
+        <div class="flex items-end">
+          <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-200 shadow-lg">Add Appointment</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Appointments List Section -->
+    <section class="bg-white shadow-2xl rounded-2xl p-8 m-6 max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Upcoming Appointments</h2>
+      <div id="appointmentsList" class="space-y-6">
+        <!-- Appointments will be dynamically inserted here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full p-4 bg-white shadow-xl flex justify-around fixed bottom-0">
+    <a href="home_page_caregiver.html" class="text-4xl cursor-pointer transition-transform transform hover:scale-125">🏠</a>
+    <a href="profile_caregiver.html" class="text-4xl cursor-pointer transition-transform transform hover:scale-125">👤</a>
+    <a href="settings_caregiver.html" class="text-4xl cursor-pointer transition-transform transform hover:scale-125">⚙️</a>
+  </footer>
+
+  <script>
+    // Handle form submission to add new appointments dynamically
+    document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Get form values
+      const title = document.getElementById('title').value;
+      const hospital = document.getElementById('hospital').value;
+      const location = document.getElementById('location').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      
+      // Create appointment card
+      const appointmentCard = document.createElement('div');
+      appointmentCard.className = 'card bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl shadow-2xl p-6 flex flex-col md:flex-row justify-between items-center transition duration-300';
+      
+      // Appointment details container
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'text-white';
+      detailsDiv.innerHTML = `
+        <h3 class="text-2xl font-bold mb-2">${title}</h3>
+        <p class="mb-1"><strong>Hospital:</strong> ${hospital}</p>
+        <p class="mb-1"><strong>Location:</strong> ${location}</p>
+        <p class="mb-1"><strong>Date & Time:</strong> ${date} | ${time}</p>
+      `;
+      
+      // Reminder toggle button that won't change after being set
+      const reminderBtn = document.createElement('button');
+      reminderBtn.className = 'bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-green-500 transition duration-300';
+      reminderBtn.textContent = 'Set Reminder';
+      reminderBtn.addEventListener('click', function() {
+        // If reminder already set, do nothing
+        if(reminderBtn.classList.contains('bg-green-500')) return;
+        // Otherwise, set the reminder and disable further toggling
+        reminderBtn.classList.replace('bg-red-500', 'bg-green-500');
+        reminderBtn.textContent = 'Reminder Set';
+      });
+      
+      // Append details and button to appointment card
+      appointmentCard.appendChild(detailsDiv);
+      appointmentCard.appendChild(reminderBtn);
+      
+      // Append appointment card to the appointments list
+      document.getElementById('appointmentsList').appendChild(appointmentCard);
+      
+      // Reset form
+      document.getElementById('appointmentForm').reset();
+    });
+  </script>
+</body>
+</html>
