@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caregiver Fall Report</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-blue-600 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white text-black p-4 sticky top-0 shadow-lg flex justify-center items-center">
+    <h1 class="text-3xl font-bold">Elder Fall Report</h1>
+  </header>
+
+  <!-- Fall Alerts Section -->
+  <section class="container mx-auto p-6 mt-8 bg-white rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold mb-4">Recent Fall Alerts</h2>
+    <p class="text-gray-700 mb-4">Below are the fall alerts reported from the elder profile.</p>
+    <ul id="fallAlerts" class="list-disc pl-6 space-y-2">
+      <!-- Fall alerts will be loaded here -->
+      <li class="text-gray-600">No fall alerts yet.</li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-white text-white p-4 fixed bottom-0 w-full flex justify-around">
+    <a href="dashboard_caregiver.html" class="text-2xl hover:scale-125 transition-transform">🏠</a>
+    <a href="profile_caregiver.html" class="text-2xl hover:scale-125 transition-transform">👤</a>
+    <a href="settings_caregiver.html" class="text-2xl hover:scale-125 transition-transform">⚙️</a>
+  </footer>
+
+  <!-- JavaScript to load fall alerts -->
+  <script>
+    // Function to load fall alerts from localStorage
+    function loadFallAlerts() {
+      const alerts = JSON.parse(localStorage.getItem("fallHistory")) || [];
+      const alertsList = document.getElementById("fallAlerts");
+      if (alerts.length > 0) {
+        alertsList.innerHTML = alerts
+          .map(alert => `<li class="text-gray-700">${alert}</li>`)
+          .join("");
+      } else {
+        alertsList.innerHTML = '<li class="text-gray-600">No fall alerts yet.</li>';
+      }
+    }
+
+    // Load alerts on page load
+    document.addEventListener("DOMContentLoaded", loadFallAlerts);
+  </script>
+</body>
+</html>

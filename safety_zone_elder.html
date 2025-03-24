@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eldora - Elder Profile</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    #map {
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans bg-gradient-to-br from-white to-purple-400 text-gray-800 pb-20">
+  <!-- (No top appbar) -->
+
+  <!-- Header -->
+  <header class="text-center w-full bg-gradient-to-r from-blue-400 to-purple-500 text-white p-6 shadow-lg">
+    <div class="inline-flex items-center">
+      <img src="https://cdn-icons-png.flaticon.com/512/0/619.png" alt="Location Icon" class="w-8 h-8 mr-2"/>
+      <h1 class="text-3xl">Eldora - Map (Elder Profile)</h1>
+    </div>
+  </header>
+  
+  <!-- Map Section -->
+  <div class="p-4">
+    <h2 class="text-4xl text-center mb-4">Your Map</h2>
+    <div id="map" class="mx-auto border-2 border-gray-300 rounded-md"></div>
+  </div>
+  
+  <!-- Status Section -->
+  <div id="status" class="text-center text-lg font-bold my-5">Loading status...</div>
+  
+  <!-- Footer Navigation -->
+  <footer class="w-full p-4 bg-white shadow-lg flex justify-around fixed bottom-0">
+    <a href="home_page_elder.html" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">🏠</a>
+    <a href="profile_elder.html" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">👤</a>
+    <a href="settings_elder.html" class="text-2xl cursor-pointer transition-transform transform hover:scale-125">⚙️</a>
+  </footer>
+  
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Turf.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  
+  <script>
+    let map, userMarker;
+    
+    function initMap() {
+      const defaultCoords = [37.7749, -122.4194];
+      map = L.map('map').setView(defaultCoords, 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            map.setView([lat, lng], 15);
+            userMarker = L.marker([lat, lng]).addTo(map)
+              .bindPopup("Your Location").openPopup();
+          },
+          () => console.log("Geolocation not allowed or unavailable.")
+        );
+      }
+      
+      watchUserPosition();
+    }
+    
+    // Watch the user's position and update marker and status accordingly
+    function watchUserPosition() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            if (userMarker) {
+              userMarker.setLatLng([lat, lng]);
+            } else {
+              userMarker = L.marker([lat, lng]).addTo(map);
+            }
+            updateStatus();
+          },
+          (error) => {
+            console.log("Error watching position:", error);
+            document.getElementById("status").textContent = "Location access denied!";
+            document.getElementById("status").style.color = "red";
+          },
+          { enableHighAccuracy: true, maximumAge: 10000 }
+        );
+      } else {
+        document.getElementById("status").textContent = "Geolocation not supported!";
+      }
+    }
+    
+    // Update the safe-zone status based on the current location and stored safe zone data.
+    function updateStatus() {
+      const statusEl = document.getElementById("status");
+      const safeZoneStr = localStorage.getItem("safeZone"); // Expecting a GeoJSON object as string
+      if (!safeZoneStr) {
+        statusEl.textContent = "No Safe Zone Defined";
+        statusEl.style.color = "black";
+        return;
+      }
+      const safeZone = JSON.parse(safeZoneStr);
+      if (!userMarker) return;
+      const pos = userMarker.getLatLng();
+      const pt = turf.point([pos.lng, pos.lat]);
+      const inside = turf.booleanPointInPolygon(pt, safeZone);
+      if (inside) {
+        statusEl.textContent = "In Safe-Zone";
+        statusEl.style.color = "green";
+      } else {
+        statusEl.textContent = "Out of Safe-Zone";
+        statusEl.style.color = "red";
+      }
+    }
+    
+    window.addEventListener("DOMContentLoaded", initMap);
+  </script>
+</body>
+</html>
