@@ -3,45 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eldora</title>
+  <title>Eldora - Welcome</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Base styles and reset */
-    body, h1 {
-      margin: 0;
-      padding: 0;
-    }
+    /* Animated gradient background */
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #f6f4f8, #691ce4);
-      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(-45deg, #2c3e50, #3498db, #8e44ad, #2980b9);
+      background-size: 400% 400%;
+      animation: gradientBG 5s ease infinite;
     }
-    /* Link styling */
-    .app-link {
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    /* Welcome text styling and animation */
+    .welcome-text {
+      font-family: 'Poppins', sans-serif;
       font-size: 4rem;
       font-weight: 700;
       color: #ffffff;
-      text-decoration: none;
-      position: relative;
-      
-      transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      padding: 20px 40px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
     }
-    .app-link:hover {
-      transform: scale(1.1);
-      color: #FFEB3B;
-      text-shadow: 0 0 20px rgba(255, 235, 59, 0.8);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    /* Daruma doll gentle rocking animation */
+    .daruma {
+      display: block;
+      margin: 20px auto;
+      width: 150px;
+      animation: rock 3s ease-in-out infinite;
+    }
+    @keyframes rock {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(5deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    /* Profile selection button styling */
+    .profile-btn {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 20px 0.5rem; /* Reduced horizontal padding */
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+      text-align: center;
+    }
+    .profile-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+      background: rgba(255, 255, 255, 0.25);
     }
   </style>
 </head>
 <body>
-  <a href="home_page_elder.html" class="app-link">Eldora</a>
+  <div class="container mx-auto p-4 space-y-12">
+    <!-- Welcome Section -->
+    <div class="flex flex-col items-center">
+      <h1 class="welcome-text">Welcome to Eldora!</h1>
+      <!-- Daruma Doll Image -->
+      <img src="eldora.png" alt="Daruma Doll" class="daruma rounded-full shadow-lg">
+    </div>
+    <!-- Profile Selection Section -->
+    <div>
+      <h1 class="text-3xl font-bold text-center text-red-200 mb-8">Select Your Profile</h1>
+      <div class="flex flex-col space-y-6">
+        <a href="profile_caregiver.html" class="block bg-indigo-300 text-black text-center py-3 px-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
+          Caregiver
+        </a>
+        <a href="profile_elder.html" class="block bg-indigo-300 text-black text-center py-3 px-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
+          Elder
+        </a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
